@@ -103,12 +103,12 @@ func TestSearch(t *testing.T) {
 }
 
 func TestUsage(t *testing.T) {
-	got := usage(byName["folder-plus"], 32, core.RGB(0xEC4899), kubai.VariantSoft, true)
-	want := "kubai.Icon{\n\tSymbol:     kubai.FolderPlus(),\n\tSize:       32,\n\tColor:      core.RGB(0xEC4899),\n\tVariant:    kubai.VariantSoft,\n\tBadgeColor: kubai.FolderPlus().Tone(),\n\tLabel:      \"Folder plus\",\n}"
+	got := usage(byName["folder-plus"], 32, core.RGB(0xEC4899), kubai.VariantSoft, true, true)
+	want := "kubai.Icon{\n\tSymbol:     kubai.FolderPlus(),\n\tSize:       32,\n\tColor:      core.RGB(0xEC4899),\n\tVariant:    kubai.VariantSoft,\n\tBadgeColor: kubai.FolderPlus().Tone(),\n\tClick:      true,\n\tLabel:      \"Folder plus\",\n}"
 	if got != want {
 		t.Fatalf("usage is\n%s\nwant\n%s", got, want)
 	}
-	if got := usage(byName["folder"], 24, kubai.Reference, kubai.VariantColor, true); got != "kubai.Icon{\n\tSymbol: kubai.Folder(),\n\tLabel:  \"Folder\",\n}" {
+	if got := usage(byName["folder"], 24, kubai.Reference, kubai.VariantColor, true, false); got != "kubai.Icon{\n\tSymbol: kubai.Folder(),\n\tLabel:  \"Folder\",\n}" {
 		t.Fatalf("default usage is\n%s", got)
 	}
 }

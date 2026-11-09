@@ -21,7 +21,7 @@ func label(name string) string {
 
 // usage is the Go that draws e as the settings say, leaving out what is
 // already the default.
-func usage(e entry, size float64, accent core.Color, variant kubai.Variant, tone bool) string {
+func usage(e entry, size float64, accent core.Color, variant kubai.Variant, tone, click bool) string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "kubai.Icon{\nSymbol: kubai.%s(),\n", e.ident)
 	if size != 24 {
@@ -35,6 +35,9 @@ func usage(e entry, size float64, accent core.Color, variant kubai.Variant, tone
 	}
 	if tone && e.get().Tone() != 0 {
 		fmt.Fprintf(&b, "BadgeColor: kubai.%s().Tone(),\n", e.ident)
+	}
+	if click {
+		b.WriteString("Click: true,\n")
 	}
 	fmt.Fprintf(&b, "Label: %q,\n}", label(e.name))
 	// gofmt aligns the fields as an editor would.

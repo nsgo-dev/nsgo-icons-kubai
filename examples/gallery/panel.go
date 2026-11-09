@@ -43,7 +43,7 @@ func panel(cx *core.Scope, s *state) core.Node {
 		return core.Text{Content: text, Style: ui.TypeCaption.Merge(core.Style{FontWeight: ui.Semibold}), StyleFunc: muted}
 	}
 	code := func() string {
-		return usage(s.selected(), s.size.Get(), s.accent.Get(), s.variant.Get(), s.tone.Get())
+		return usage(s.selected(), s.size.Get(), s.accent.Get(), s.variant.Get(), s.tone.Get(), s.click.Get())
 	}
 	copied := core.NewSignal(cx, "")
 	preview := core.Dynamic(func(*core.Scope) core.Node {
@@ -52,7 +52,7 @@ func panel(cx *core.Scope, s *state) core.Node {
 			core.View{Style: core.Style{AlignSelf: core.AlignStretch, Height: core.Pt(140), AlignItems: core.AlignCenter,
 				JustifyContent: core.JustifyCenter, CornerRadius: ui.RadiusControl},
 				StyleFunc: func() core.Style { return core.Style{Background: colors.Inset()} },
-				Children:  []core.Node{s.icon(e, 72, "preview")}},
+				Children:  []core.Node{s.icon(e, 72, "preview", s.click.Get())}},
 			core.Text{Content: e.name, Style: ui.TypeTitle.Merge(core.Style{Margin: core.Edges{Top: 6}}), TestID: "preview-name"},
 			core.Text{Content: fmt.Sprintf("kubai.%s()", e.ident), Style: ui.TypeCode, StyleFunc: muted},
 		}}
@@ -95,6 +95,7 @@ func panel(cx *core.Scope, s *state) core.Node {
 					knob("Variant", ui.Select[kubai.Variant]{Options: variants, Value: s.variant.Get, OnChange: s.variant.Set, Label: "Variant", TestID: "variant",
 						Style: core.Style{Width: core.Pt(panelWidth - 100)}}),
 					knob("Tone", ui.Switch{Checked: s.tone.Get, OnChange: s.tone.Set, Label: "Tone"}),
+					knob("Click", ui.Switch{Checked: s.click.Get, OnChange: s.click.Set, Label: "Click"}),
 				}},
 				statsSetting(cx),
 			}},

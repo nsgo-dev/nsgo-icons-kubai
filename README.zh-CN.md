@@ -40,7 +40,7 @@ import kubai "github.com/oneo-me/nsgo-icons-kubai"
 kubai.Icon{Symbol: kubai.FolderPlus(), Size: 32, Label: "Folder plus"}
 ```
 
-每个图标都有一个访问函数，名称是上游名称的 PascalCase 形式（`folder-plus` 即 `FolderPlus`）。`Icon` 还可以通过 `Color` 指定强调色，以及 `Variant` 和 `BadgeColor`。
+每个图标都有一个访问函数，名称是上游名称的 PascalCase 形式（`folder-plus` 即 `FolderPlus`）。`Icon` 还可以通过 `Color` 指定强调色，以及 `Variant` 和 `BadgeColor`。设置 `Click` 可在点击时播放一次动画。
 
 要查找图标并复制绘制它的代码，运行 gallery：
 

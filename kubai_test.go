@@ -123,6 +123,31 @@ func TestHover(t *testing.T) {
 	}
 }
 
+// TestClick plays the motion once on a press and returns to rest.
+func TestClick(t *testing.T) {
+	app := nsgotest.Start(t, func(cx *core.Scope) core.Node {
+		return core.View{Style: core.Style{Padding: core.All(20)}, Children: []core.Node{
+			Icon{Symbol: FolderPlus(), Size: 48, Click: true, TestID: "icon"},
+		}}
+	}, nsgotest.ManualFrames())
+	icon := app.Find("icon")
+	rest := slices.Clone(icon.Drawing.Ops)
+	app.Press("icon")
+	icon = app.Find("icon")
+	if len(icon.Drawing.Slots) == 0 {
+		t.Fatal("a clicked icon binds no numbers")
+	}
+	app.Advance(duration)
+	icon = app.Find("icon")
+	if slices.Equal(icon.Ops, rest) {
+		t.Fatal("the click pose is the rest pose")
+	}
+	app.Advance(duration)
+	if got := app.Find("icon").Ops; !near(got, rest) {
+		t.Fatal("the icon did not come back to rest")
+	}
+}
+
 // near reports whether two drawings hold the same ops, their numbers
 // within rounding.
 func near(a, b []core.DrawOp) bool {

@@ -1,5 +1,6 @@
 // Package kubai provides Kubai Icons for NSGo: layered, colored icons that
-// move on hover, one accessor per icon, drawn by Icon.
+// move on hover, one accessor per icon, drawn by Icon. Click plays the
+// motion once on a press.
 //
 //	kubai.Icon{Symbol: kubai.Folder(), Size: 32, Label: "Folder"}
 //

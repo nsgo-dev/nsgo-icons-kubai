@@ -103,7 +103,7 @@ func cell(cx *core.Scope, s *state, row core.ListRow) core.Node {
 			return core.View{}
 		}
 		return core.View{Style: core.Style{AlignItems: core.AlignCenter, Gap: 8, Width: core.Pct(100)}, Children: []core.Node{
-			s.icon(e, core.Points(s.size.Get()), "icon-"+e.name),
+			s.icon(e, core.Points(s.size.Get()), "icon-"+e.name, false),
 			core.Text{Content: e.name, Style: ui.TypeCaption.Merge(core.Style{NumberOfLines: 1, MaxWidth: core.Pct(100)}),
 				StyleFunc: func() core.Style { return core.Style{Color: colors.Muted()} }},
 		}}

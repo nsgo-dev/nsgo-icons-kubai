@@ -40,7 +40,7 @@ import kubai "github.com/oneo-me/nsgo-icons-kubai"
 kubai.Icon{Symbol: kubai.FolderPlus(), Size: 32, Label: "Folder plus"}
 ```
 
-Each icon has an accessor named after upstream's in PascalCase (`folder-plus` is `FolderPlus`). `Icon` also takes an accent in `Color`, a `Variant` and a `BadgeColor`.
+Each icon has an accessor named after upstream's in PascalCase (`folder-plus` is `FolderPlus`). `Icon` also takes an accent in `Color`, a `Variant` and a `BadgeColor`. Set `Click` to play the motion once on a press.
 
 To find an icon and copy the code that draws it, run the gallery:
 

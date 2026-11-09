@@ -27,7 +27,7 @@ The repository is one Go module. Package `kubai` at its root draws [Kubai Icons]
 
 **Compile.** `kubaigen` runs upstream's renderer in goja at moments of each motion and turns the frames into canvas operations. Numbers that move become tracks over one motion value ([compiling](docs/architecture/icons.md#compiling)).
 
-**Draw.** `Icon` draws the rest pose until the first hover. It then binds the moving numbers to an animated value, so the platform plays the motion on its frame clock ([drawing](docs/architecture/icons.md#drawing)).
+**Draw.** `Icon` draws the rest pose until the first hover or click. It then binds the moving numbers to an animated value, so the platform plays the motion on its frame clock ([drawing](docs/architecture/icons.md#drawing)).
 
 **Count use.** The website and the gallery each report to a site of their own in Umami (`umami.oneo.me`), as NSGo's do. The website loads Umami's script on `oneo-me.github.io` only. The gallery posts its events itself.
 
@@ -37,7 +37,7 @@ The gallery keeps two values in its storage: a random install ID, which makes on
 
 ## Verification
 
-- `go tool nsgo test` parses and draws every icon and badge, plays a hover, and checks the generator's paths, tracks and variants.
+- `go tool nsgo test` parses and draws every icon and badge, plays a hover and a click, and checks the generator's paths, tracks and variants.
 - It also runs the gallery headless: the grid stays virtualized within the window, search ranks and filters, and the usage is gofmt's.
 - `go tool nsgo test -target macos examples/gallery` screenshots the gallery at rest, on hover and searched. `website/assets/gallery.png` is its `gallery.png`, 1600 pixels wide.
 - Review motion in a desktop session; a screenshot shows one moment.

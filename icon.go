@@ -24,7 +24,8 @@ var Reference = core.RGB(0x5393FF)
 
 // Icon draws a Kubai icon, moving on hover: a folder opens, a bell rings.
 // It moves when the mouse is over it, or as Hovered says, so a button can
-// play its icon when the button is hovered.
+// play its icon when the button is hovered. Click plays the same motion
+// once on a press.
 //
 //	kubai.Icon{Symbol: kubai.Folder(), Size: 32, Color: core.RGB(0x6366F1)}
 //
@@ -45,6 +46,9 @@ type Icon struct {
 	// Hovered, when set, plays the motion while it reports true, instead
 	// of the mouse over the icon.
 	Hovered func() bool
+	// Click, when true, plays the motion once on a press: to the hover
+	// pose and back to rest.
+	Click bool
 	// Label names the icon for assistive technology; without it the icon
 	// is a decoration.
 	Label  string
@@ -109,8 +113,9 @@ func (m *motion) at(now time.Time) float64 {
 
 // hover moves the icon toward its hover pose or back to rest, from the
 // pose it shows. live turns on with the first move, and the drawing binds
-// its numbers from then on.
-func (m *motion) hover(cx *core.Scope, on bool, live *core.Signal[bool]) {
+// its numbers from then on. done, if set, runs when the move ends, with
+// whether it ran to its end.
+func (m *motion) hover(cx *core.Scope, on bool, live *core.Signal[bool], done func(bool)) {
 	now := cx.Now()
 	cur := m.at(now)
 	target := 2.0
@@ -118,6 +123,9 @@ func (m *motion) hover(cx *core.Scope, on bool, live *core.Signal[bool]) {
 		target = 1
 	}
 	if cur == target || cur == 0 && !on {
+		if done != nil {
+			done(true)
+		}
 		return
 	}
 	live.Set(true)
@@ -132,11 +140,37 @@ func (m *motion) hover(cx *core.Scope, on bool, live *core.Signal[bool]) {
 	if cx.Env().ReduceMotion() {
 		m.value.Set(target)
 		m.from, m.to, m.start = target, target, now
+		if done != nil {
+			done(true)
+		}
 		return
 	}
 	m.value.Set(cur)
 	m.from, m.to, m.start = cur, target, now
-	cx.StartAnimation(core.Timing(m.value, target, core.TimingConfig{Duration: duration, Easing: core.BezierEasing(easeCurve)}), nil)
+	cx.StartAnimation(core.Timing(m.value, target, core.TimingConfig{Duration: duration, Easing: core.BezierEasing(easeCurve)}), done)
+}
+
+// click plays the motion once: from rest to the hover pose and, unless
+// still reports the pointer is over the icon, back to rest.
+func (m *motion) click(cx *core.Scope, live *core.Signal[bool], still func() bool) {
+	now := cx.Now()
+	live.Set(true)
+	if cx.Env().ReduceMotion() {
+		target := 2.0
+		if still() {
+			target = 1
+		}
+		m.value.Set(target)
+		m.from, m.to, m.start = target, target, now
+		return
+	}
+	m.value.Set(0)
+	m.from, m.to, m.start = 0, 0, now
+	m.hover(cx, true, live, func(finished bool) {
+		if finished && !still() {
+			m.hover(cx, false, live, nil)
+		}
+	})
 }
 
 // Render implements core.Node.
@@ -156,7 +190,11 @@ func (i Icon) Render(cx *core.Scope) core.Node {
 	sym := i.Symbol
 	live := core.NewSignal(cx, false)
 	m := &motion{value: core.NewAnimatedValue(cx, 0)}
-	hover := func(on bool) { cx.Untrack(func() { m.hover(cx, on, live) }) }
+	over := false
+	hover := func(on bool) {
+		over = on
+		cx.Untrack(func() { m.hover(cx, on, live, nil) })
+	}
 	if i.Hovered != nil {
 		cx.Effect(func() { hover(i.Hovered()) })
 	}
@@ -186,6 +224,12 @@ func (i Icon) Render(cx *core.Scope) core.Node {
 	if i.Hovered == nil {
 		v.OnMouseEnter = func(core.MouseEvent) { hover(true) }
 		v.OnMouseLeave = func(core.MouseEvent) { hover(false) }
+	}
+	if i.Click {
+		v.OnPress = func(core.PressEvent) {
+			cx.Untrack(func() { m.click(cx, live, func() bool { return over }) })
+		}
+		v.NoFocus = true
 	}
 	return v
 }

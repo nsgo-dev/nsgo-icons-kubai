@@ -27,6 +27,7 @@ type state struct {
 	accent   *core.Signal[core.Color]
 	variant  *core.Signal[kubai.Variant]
 	tone     *core.Signal[bool]
+	click    *core.Signal[bool]
 	chosen   *ui.Selection
 	matching func() []entry
 	stats    *stats
@@ -52,14 +53,14 @@ func (s *state) selected() entry {
 }
 
 // icon is e drawn as the settings say.
-func (s *state) icon(e entry, size core.Points, testID string) core.Node {
+func (s *state) icon(e entry, size core.Points, testID string, click bool) core.Node {
 	sym := e.get()
 	badge := core.Color(0)
 	if s.tone.Get() {
 		badge = sym.Tone()
 	}
 	return kubai.Icon{Symbol: sym, Size: size, Color: s.accent.Get(), Variant: s.variant.Get(), BadgeColor: badge,
-		Label: label(e.name), TestID: testID}
+		Click: click, Label: label(e.name), TestID: testID}
 }
 
 // Root is the gallery's one screen: the search and the grid, and the panel
@@ -73,6 +74,7 @@ func Root(cx *core.Scope) core.Node {
 		accent:  core.NewSignal(cx, kubai.Reference),
 		variant: core.NewSignal(cx, kubai.VariantColor),
 		tone:    core.NewSignal(cx, false),
+		click:   core.NewSignal(cx, false),
 		chosen:  ui.NewSelection(cx, false),
 	}
 	s.chosen.Set("folder")

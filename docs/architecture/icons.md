@@ -27,9 +27,9 @@ Names are upstream's in PascalCase. A name with a leading digit, or one the pack
 
 ## Drawing
 
-`Icon` draws the rest pose alone until the first hover. Then its drawing binds every moving number to an `Interpolate` of one `AnimatedValue`. Those are made inside the canvas's `Draw`, so they go with the drawing.
+`Icon` draws the rest pose alone until the first hover or click. Then its drawing binds every moving number to an `Interpolate` of one `AnimatedValue`. Those are made inside the canvas's `Draw`, so they go with the drawing.
 
-A 460 ms timing on upstream's curve moves the value. A hover that turns back jumps to the same pose on the other half. Accessors parse their program on first use and share it afterwards.
+A 460 ms timing on upstream's curve moves the value. A hover that turns back jumps to the same pose on the other half. A click plays to the hover pose and back to rest. Accessors parse their program on first use and share it afterwards.
 
 ## Goals
 
@@ -37,6 +37,6 @@ The pack does not yet do these of upstream's:
 
 - The light rim's blur.
 - Luminance masks, such as `shuffle`'s and `ufo`'s fades.
-- Tap icons' toggled state, and a touch playing the motion forward and back.
+- Tap icons' toggled state.
 
 It has been checked on macOS only.
