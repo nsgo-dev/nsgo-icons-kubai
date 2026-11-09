@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/oneo-me/nsgo/core"
+	"github.com/oneo-me/nsgo/desktop"
 	"github.com/oneo-me/nsgo/nsgotest"
 
 	kubai "github.com/oneo-me/nsgo-icons-kubai"
@@ -62,6 +63,27 @@ func TestSearchAndCopy(t *testing.T) {
 	app.Clear("search")
 	app.Type("search", "no such icon")
 	app.Find("text:No icons match")
+}
+
+// TestApplicationMenu sets the app menu of roles, Edit, and Window.
+func TestApplicationMenu(t *testing.T) {
+	app := nsgotest.Start(t, Root, nsgotest.Size(1100, 760))
+	if len(app.Menu) == 0 {
+		t.Fatal("no application menu")
+	}
+	if app.Menu[0].Items[0].Role != desktop.MenuAbout {
+		t.Fatalf("app menu starts with %+v", app.Menu[0].Items[0])
+	}
+	var roles []desktop.MenuRole
+	for _, it := range app.Menu[len(app.Menu)-1].Items {
+		if !it.Separator {
+			roles = append(roles, it.Role)
+		}
+	}
+	want := []desktop.MenuRole{desktop.MenuMinimize, desktop.MenuZoom, desktop.MenuToggleFullScreen, desktop.MenuClose}
+	if !slices.Equal(roles, want) {
+		t.Fatalf("Window roles %v, want %v", roles, want)
+	}
 }
 
 func TestSearch(t *testing.T) {

@@ -6,6 +6,8 @@ package main
 import (
 	"github.com/oneo-me/nsgo"
 	"github.com/oneo-me/nsgo/core"
+	"github.com/oneo-me/nsgo/desktop"
+	"github.com/oneo-me/nsgo/desktop/locales"
 	"github.com/oneo-me/nsgo/ui"
 
 	kubai "github.com/oneo-me/nsgo-icons-kubai"
@@ -76,9 +78,31 @@ func Root(cx *core.Scope) core.Node {
 	s.chosen.Set("folder")
 	s.matching = core.NewMemoFunc(cx, func() []entry { return search(s.query.Get()) }, nil).Get
 	s.stats = reportUsage(cx, s)
+	desktop.SetTitle(cx, "Kubai Icons")
+	cx.Effect(func() { desktop.SetApplicationMenu(cx, menu(locales.For(cx))) })
 	return core.View{Style: ui.FillRest.Merge(core.Style{Direction: core.Row}),
 		StyleFunc: func() core.Style { return core.Style{Background: colors.Background()} },
 		Children:  []core.Node{browser(cx, s), panel(cx, s)}}
+}
+
+// menu is the application menu: the app menu and Edit of roles, and
+// Window.
+func menu(tr locales.Messages) []desktop.MenuItem {
+	return []desktop.MenuItem{
+		{Label: "Kubai Icons", Items: []desktop.MenuItem{
+			{Role: desktop.MenuAbout}, {Separator: true},
+			{Role: desktop.MenuHide}, {Role: desktop.MenuHideOthers}, {Role: desktop.MenuShowAll}, {Separator: true},
+			{Role: desktop.MenuQuit},
+		}},
+		{Label: tr.Edit(), Items: []desktop.MenuItem{
+			{Role: desktop.MenuUndo}, {Role: desktop.MenuRedo}, {Separator: true},
+			{Role: desktop.MenuCut}, {Role: desktop.MenuCopy}, {Role: desktop.MenuPaste}, {Role: desktop.MenuSelectAll},
+		}},
+		{Label: tr.Window(), Items: []desktop.MenuItem{
+			{Role: desktop.MenuMinimize}, {Role: desktop.MenuZoom}, {Role: desktop.MenuToggleFullScreen}, {Separator: true},
+			{Role: desktop.MenuClose},
+		}},
+	}
 }
 
 func main() { nsgo.Run(Root, nsgo.WindowSize(1100, 760)) }
