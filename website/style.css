@@ -1,0 +1,143 @@
+/* The site of NSGo Kubai Icons: one static page in English and one in
+   Chinese, white with Kubai's blue, dark when the system is. */
+
+:root {
+  --bg: #ffffff;
+  --soft: #f6f7f9;
+  --border: #e7e8ec;
+  --text: #0c0d10;
+  --muted: #666a73;
+  --blue: #5393ff;
+  --blue-ink: #2f6fe0;
+  --gradient: linear-gradient(135deg, #93bbff, #5393ff 55%, #2f6fe0);
+  --code: #f8f9fb;
+  --shadow: 0 2px 6px rgb(16 24 40 / 5%), 0 40px 80px -32px rgb(16 24 40 / 28%);
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1012;
+    --soft: #17181b;
+    --border: #2a2c31;
+    --text: #f2f3f5;
+    --muted: #9a9ea8;
+    --blue-ink: #93bbff;
+    --code: #17181b;
+    --shadow: 0 40px 80px -32px rgb(0 0 0 / 60%);
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--blue-ink); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+code, pre { font: 14px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; tab-size: 4; }
+
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+header .wrap {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 64px;
+}
+
+header .name { font-weight: 600; color: var(--text); margin-right: auto; }
+header a:not(.name) { color: var(--muted); font-size: 15px; }
+
+.hero { text-align: center; padding: 72px 0 48px; }
+
+.hero h1 {
+  margin: 0 0 16px;
+  font-size: clamp(36px, 6vw, 60px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.hero h1 span {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero p { margin: 0 auto 32px; max-width: 640px; color: var(--muted); font-size: 19px; }
+
+.actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 22px;
+  border-radius: 12px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.button:hover { text-decoration: none; background: var(--soft); }
+.button.primary { background: var(--gradient); border-color: transparent; color: #fff; }
+.button.primary:hover { filter: brightness(1.05); }
+
+.shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto 96px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+section { padding: 0 0 88px; }
+section h2 { margin: 0 0 8px; font-size: 30px; letter-spacing: -0.01em; }
+section > .wrap > p { margin: 0 0 28px; color: var(--muted); max-width: 680px; }
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.features div { padding: 22px; border-radius: 16px; background: var(--soft); }
+.features h3 { margin: 0 0 6px; font-size: 17px; }
+.features p { margin: 0; color: var(--muted); font-size: 15px; }
+
+.code { position: relative; margin: 0 0 16px; }
+
+.code pre {
+  margin: 0;
+  padding: 18px 20px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--code);
+}
+
+.code button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+footer { border-top: 1px solid var(--border); padding: 32px 0 48px; color: var(--muted); font-size: 14px; }
+footer p { margin: 0 0 6px; }

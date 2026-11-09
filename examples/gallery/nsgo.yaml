@@ -1,0 +1,9 @@
+name: Kubai Icons
+id: me.oneo.nsgo-icons-kubai.gallery
+version: 0.1.0
+
+dev:
+  target: native
+
+build:
+  output: dist

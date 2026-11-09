@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NSGo 的 Kubai Icons</title>
+  <meta name="description" content="2,871 个悬停时会动的分层图标，用于 NSGo 原生应用。" />
+  <link rel="alternate" hreflang="en" href="../" />
+  <link rel="icon" type="image/png" href="../assets/icon.png" />
+  <link rel="apple-touch-icon" href="../assets/icon.png" />
+  <link rel="stylesheet" href="../style.css" />
+  <!-- Umami counts the deployed site's visits; data-domains skips local servers. -->
+  <script defer src="https://umami.oneo.me/script.js" data-website-id="4c29c1e7-28ea-4d0c-8297-b22d29bb1c41"
+    data-domains="oneo-me.github.io"></script>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <a class="name" href="./">NSGo Kubai Icons</a>
+      <a href="https://oneo-me.github.io/nsgo/zh/">NSGo</a>
+      <a href="https://github.com/oneo-me/nsgo-icons-kubai" data-umami-event="open-github">GitHub</a>
+      <a href="../" hreflang="en" lang="en">English</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap hero">
+      <h1>NSGo 的 <span>Kubai Icons</span></h1>
+      <p>2,871 个以强调色的色调分层绘制、带渐变、阴影和角标，悬停时会动的图标。为 NSGo 原生应用预先编译：不运行 JavaScript，动画由平台在其帧时钟上播放。</p>
+      <div class="actions">
+        <a class="button primary" href="#start">开始使用</a>
+        <a class="button" href="https://github.com/oneo-me/nsgo-icons-kubai" data-umami-event="open-github">GitHub</a>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <img class="shot" src="../assets/gallery.png" width="1600" height="1105"
+        alt="gallery：图标网格，右侧是选中的图标及绘制它的代码" />
+    </div>
+
+    <section>
+      <div class="wrap">
+        <h2>原生，而且会动</h2>
+        <p>上游用 JavaScript 绘制每个图标。本库在构建时运行一次这些代码，并保留它画出的结果。</p>
+        <div class="features">
+          <div><h3>分层着色</h3><p>每个图标都可以指定强调色和样式，角标有自己的色调。</p></div>
+          <div><h3>悬停即动</h3><p>每个图标由一个动画值驱动，动画在平台的帧时钟上运行。</p></div>
+          <div><h3>不需要 JavaScript</h3><p>图标是画布操作和动画轨道，NSGo 的每个后端都能绘制。</p></div>
+          <div><h3>用多少带多少</h3><p>每个图标一个访问函数，没有注册表：应用只链接它调用的图标。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="start">
+      <div class="wrap">
+        <h2>开始使用</h2>
+        <p>使用 Go 1.26 或更高版本，把本库加入 NSGo 应用。</p>
+        <div class="code">
+          <pre>go get github.com/oneo-me/nsgo-icons-kubai</pre>
+          <button type="button" data-copied="已复制" data-umami-event="copy-install">复制</button>
+        </div>
+        <div class="code">
+          <pre>import kubai "github.com/oneo-me/nsgo-icons-kubai"
+
+kubai.Icon{
+	Symbol: kubai.FolderPlus(),
+	Size:   32,
+	Label:  "Folder plus",
+}</pre>
+          <button type="button" data-copied="已复制" data-umami-event="copy-usage">复制</button>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>查找图标</h2>
+        <p>gallery 可以按名称搜索所有图标，并给出按你设置的大小、强调色和样式绘制所选图标的代码，可直接复制。检出本仓库后运行：</p>
+        <div class="code">
+          <pre>git clone https://github.com/oneo-me/nsgo-icons-kubai
+cd nsgo-icons-kubai
+go tool nsgo dev examples/gallery</pre>
+          <button type="button" data-copied="已复制" data-umami-event="copy-gallery">复制</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>代码采用 MIT 许可证。</p>
+      <p>图标编译自 <a href="https://github.com/kubai087/kubai-icons">Kubai Icons</a>，© 2026 Kubai087 and the Kubai Icons contributors，采用 MIT 许可证。</p>
+    </div>
+  </footer>
+  <script src="../copy.js"></script>
+</body>
+</html>
