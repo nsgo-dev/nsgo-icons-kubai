@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/nsgo-dev/nsgo-icons-kubai/examples/gallery/locales"
 	"github.com/nsgo-dev/nsgo/core"
-	"github.com/oneo-me/nsgo-icons-kubai/examples/gallery/locales"
 )
 
 // languageKey keeps the language chosen in the settings; without it the

@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 
+	"github.com/nsgo-dev/nsgo-icons-kubai/examples/gallery/locales"
 	"github.com/nsgo-dev/nsgo/base"
 	"github.com/nsgo-dev/nsgo/core"
 	"github.com/nsgo-dev/nsgo/ui"
-	"github.com/oneo-me/nsgo-icons-kubai/examples/gallery/locales"
 
-	kubai "github.com/oneo-me/nsgo-icons-kubai"
+	kubai "github.com/nsgo-dev/nsgo-icons-kubai"
 )
 
 // accents are the accents the panel offers as one-click wells: Kubai's

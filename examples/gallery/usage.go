@@ -7,7 +7,7 @@ import (
 
 	"github.com/nsgo-dev/nsgo/core"
 
-	kubai "github.com/oneo-me/nsgo-icons-kubai"
+	kubai "github.com/nsgo-dev/nsgo-icons-kubai"
 )
 
 // label is a name as a person reads it: "folder-plus" is "Folder plus".

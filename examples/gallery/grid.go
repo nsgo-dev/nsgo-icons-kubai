@@ -4,9 +4,9 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/nsgo-dev/nsgo-icons-kubai/examples/gallery/locales"
 	"github.com/nsgo-dev/nsgo/core"
 	"github.com/nsgo-dev/nsgo/ui"
-	"github.com/oneo-me/nsgo-icons-kubai/examples/gallery/locales"
 )
 
 // search returns the icons whose names hold every word of query; spaces

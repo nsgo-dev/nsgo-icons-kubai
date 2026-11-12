@@ -27,7 +27,7 @@
 ## 安装
 
 ```sh
-go get github.com/oneo-me/nsgo-icons-kubai
+go get github.com/nsgo-dev/nsgo-icons-kubai
 ```
 
 需要 Go 1.26。`go get` 会一并拉取本库所基于的 NSGo 提交。
@@ -35,7 +35,7 @@ go get github.com/oneo-me/nsgo-icons-kubai
 ## 使用
 
 ```go
-import kubai "github.com/oneo-me/nsgo-icons-kubai"
+import kubai "github.com/nsgo-dev/nsgo-icons-kubai"
 
 kubai.Icon{Symbol: kubai.FolderPlus(), Size: 32, Label: "Folder plus"}
 ```
@@ -50,7 +50,7 @@ go tool nsgo dev examples/gallery
 
 ## 文档
 
-- [网站](https://oneo-me.github.io/nsgo-icons-kubai/zh/)
+- [网站](https://nsgo-dev.github.io/nsgo-icons-kubai/zh/)
 - [架构](ARCHITECTURE.md)：图标如何编译和绘制，以及 gallery 发送的使用统计
 - [API 参考](doc.go)与 [`Icon`](icon.go)
 

@@ -10,7 +10,7 @@ import (
 	"github.com/nsgo-dev/nsgo/desktop"
 	"github.com/nsgo-dev/nsgo/nsgotest"
 
-	kubai "github.com/oneo-me/nsgo-icons-kubai"
+	kubai "github.com/nsgo-dev/nsgo-icons-kubai"
 )
 
 // TestMain gives the platform the main thread under nsgo test -target.

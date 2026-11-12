@@ -5,13 +5,13 @@ package main
 
 import (
 	"github.com/nsgo-dev/nsgo"
+	"github.com/nsgo-dev/nsgo-icons-kubai/examples/gallery/locales"
 	"github.com/nsgo-dev/nsgo/core"
 	"github.com/nsgo-dev/nsgo/desktop"
 	desklocales "github.com/nsgo-dev/nsgo/desktop/locales"
 	"github.com/nsgo-dev/nsgo/ui"
-	"github.com/oneo-me/nsgo-icons-kubai/examples/gallery/locales"
 
-	kubai "github.com/oneo-me/nsgo-icons-kubai"
+	kubai "github.com/nsgo-dev/nsgo-icons-kubai"
 )
 
 // entry is one icon: its upstream name, its accessor's name and the

@@ -27,7 +27,7 @@
 ## Install
 
 ```sh
-go get github.com/oneo-me/nsgo-icons-kubai
+go get github.com/nsgo-dev/nsgo-icons-kubai
 ```
 
 Requires Go 1.26. `go get` brings the NSGo commit this library is built against.
@@ -35,7 +35,7 @@ Requires Go 1.26. `go get` brings the NSGo commit this library is built against.
 ## Usage
 
 ```go
-import kubai "github.com/oneo-me/nsgo-icons-kubai"
+import kubai "github.com/nsgo-dev/nsgo-icons-kubai"
 
 kubai.Icon{Symbol: kubai.FolderPlus(), Size: 32, Label: "Folder plus"}
 ```
@@ -50,7 +50,7 @@ go tool nsgo dev examples/gallery
 
 ## Documentation
 
-- [Website](https://oneo-me.github.io/nsgo-icons-kubai/)
+- [Website](https://nsgo-dev.github.io/nsgo-icons-kubai/)
 - [Architecture](ARCHITECTURE.md): how the icons are compiled and drawn, and the usage statistics the gallery sends
 - [API reference](doc.go) and [`Icon`](icon.go)
 

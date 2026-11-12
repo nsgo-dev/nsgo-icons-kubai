@@ -20,7 +20,7 @@ import (
 const (
 	statsURL     = "https://umami.oneo.me/api/send"
 	statsWebsite = "4c29c1e7-28ea-4d0c-8297-b22d29bb1c41"
-	statsHost    = "oneo-me.github.io"
+	statsHost    = "nsgo-dev.github.io"
 	statsTag     = "gallery"
 )
 

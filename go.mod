@@ -1,4 +1,4 @@
-module github.com/oneo-me/nsgo-icons-kubai
+module github.com/nsgo-dev/nsgo-icons-kubai
 
 go 1.26.0
 

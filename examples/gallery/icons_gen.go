@@ -2,7 +2,7 @@
 
 package main
 
-import kubai "github.com/oneo-me/nsgo-icons-kubai"
+import kubai "github.com/nsgo-dev/nsgo-icons-kubai"
 
 // allIcons is every icon, in upstream's order.
 var allIcons = []entry{
