@@ -29,7 +29,7 @@ The repository is one Go module. Package `kubai` at its root draws [Kubai Icons]
 
 **Draw.** `Icon` draws the rest pose until the first hover or click. It then binds the moving numbers to an animated value, so the platform plays the motion on its frame clock ([drawing](docs/architecture/icons.md#drawing)).
 
-**Count use.** The website and the gallery each report to a site of their own in Umami (`umami.oneo.me`), as NSGo's do. The website loads Umami's script on `oneo-me.github.io` only. The gallery posts its events itself.
+**Count use.** The website and the gallery report to one site in Umami (`umami.oneo.me`), tagged apart. The website loads Umami's script on `oneo-me.github.io` only. The gallery posts its events itself.
 
 ## Data and state
 

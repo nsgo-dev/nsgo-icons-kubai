@@ -13,16 +13,17 @@ import (
 	"github.com/oneo-me/nsgo/core"
 )
 
-// The gallery counts its use in Umami, as NSGo's gallery does, under a
-// site of its own: a pageview for each icon looked at, an event for each
-// usage copied, tagged with the platform and carrying a random ID kept in
-// the storage, so that one install is one visitor. Builds of nsgo dev
-// (statsBuild) and test binaries report nothing, and the settings turn it
-// off.
+// The gallery counts its use in Umami under the website's site: a
+// pageview for each icon looked at, an event for each usage copied,
+// tagged as the gallery client and carrying a random ID kept in the
+// storage, so that one install is one visitor. Builds of nsgo dev
+// (statsBuild) and test binaries report nothing, and the settings turn
+// it off.
 const (
 	statsURL     = "https://umami.oneo.me/api/send"
-	statsWebsite = "1ebaf193-e4d1-4de3-8c53-b9fe3d1e70d0"
+	statsWebsite = "4c29c1e7-28ea-4d0c-8297-b22d29bb1c41"
 	statsHost    = "oneo-me.github.io"
+	statsTag     = "gallery"
 )
 
 // Storage keys of the statistics: the install's ID, and statsKey "off"
@@ -151,7 +152,7 @@ func (st *stats) send(name string, data map[string]string) {
 	w := env.Window()
 	p := statsPayload{Website: statsWebsite, Hostname: statsHost, URL: "/" + st.page, Title: st.page,
 		Language: env.Locale(), Screen: fmt.Sprintf("%dx%d", int(w.Width), int(w.Height)),
-		Tag: osName(env.OS()), ID: st.id, Name: name, Data: data}
+		Tag: statsTag, ID: st.id, Name: name, Data: data}
 	select {
 	case st.queue <- p:
 	default:
@@ -193,13 +194,4 @@ func statsAgent(os core.OS) string {
 		return ""
 	}
 	return "Mozilla/5.0 (" + p + ") KubaiIconsGallery/1.0"
-}
-
-// osName is the platform's name for the events' tag.
-func osName(os core.OS) string {
-	names := map[core.OS]string{core.OSMacOS: "macOS", core.OSIOS: "iOS", core.OSAndroid: "Android", core.OSWindows: "Windows", core.OSLinux: "Linux", core.OSWeb: "web"}
-	if n, ok := names[os]; ok {
-		return n
-	}
-	return "unknown"
 }
