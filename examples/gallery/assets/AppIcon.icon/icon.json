@@ -1,0 +1,100 @@
+{
+  "features": [
+    "refractivity"
+  ],
+  "fill-specializations": [
+    {
+      "value": {
+        "linear-gradient": [
+          "srgb:1.00000,1.00000,1.00000,1.00000",
+          "srgb:0.92941,0.94902,0.98431,1.00000"
+        ],
+        "orientation": {
+          "start": {
+            "x": 0.5,
+            "y": 1
+          },
+          "stop": {
+            "x": 0.5,
+            "y": 0
+          }
+        }
+      }
+    },
+    {
+      "appearance": "dark",
+      "value": {
+        "linear-gradient": [
+          "srgb:0.13725,0.15686,0.18824,1.00000",
+          "srgb:0.07059,0.08235,0.10196,1.00000"
+        ],
+        "orientation": {
+          "start": {
+            "x": 0.5,
+            "y": 1
+          },
+          "stop": {
+            "x": 0.5,
+            "y": 0
+          }
+        }
+      }
+    }
+  ],
+  "groups": [
+    {
+      "name": "01-triangle",
+      "layers": [
+        {
+          "name": "01-triangle",
+          "image-name": "01-triangle.svg"
+        }
+      ],
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.35
+      },
+      "translucency": {
+        "enabled": false,
+        "value": 0.0
+      }
+    },
+    {
+      "name": "02-square",
+      "layers": [
+        {
+          "name": "02-square",
+          "image-name": "02-square.svg"
+        }
+      ],
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.3
+      },
+      "translucency": {
+        "enabled": true,
+        "value": 0.26
+      }
+    },
+    {
+      "name": "03-circle",
+      "layers": [
+        {
+          "name": "03-circle",
+          "image-name": "03-circle.svg"
+        }
+      ],
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.3
+      },
+      "translucency": {
+        "enabled": true,
+        "value": 0.26
+      }
+    }
+  ],
+  "supported-platforms": {
+    "squares": "shared"
+  }
+}
