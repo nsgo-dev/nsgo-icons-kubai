@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  2,871 <a href="https://github.com/kubai087/kubai-icons">Kubai Icons</a> for <a href="https://github.com/oneo-me/nsgo">NSGo</a> apps: layered, tinted with your accent, and moving on hover, with no JavaScript at run time.
+  2,945 <a href="https://github.com/kubai087/kubai-icons">Kubai Icons</a> for <a href="https://github.com/nsgo-dev/nsgo">NSGo</a> apps: layered, tinted with your accent, and moving on hover, with no JavaScript at run time.
 </p>
 
 <p align="center">

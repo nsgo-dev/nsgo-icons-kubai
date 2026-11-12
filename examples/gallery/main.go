@@ -4,11 +4,12 @@
 package main
 
 import (
-	"github.com/oneo-me/nsgo"
-	"github.com/oneo-me/nsgo/core"
-	"github.com/oneo-me/nsgo/desktop"
-	"github.com/oneo-me/nsgo/desktop/locales"
-	"github.com/oneo-me/nsgo/ui"
+	"github.com/nsgo-dev/nsgo"
+	"github.com/nsgo-dev/nsgo/core"
+	"github.com/nsgo-dev/nsgo/desktop"
+	desklocales "github.com/nsgo-dev/nsgo/desktop/locales"
+	"github.com/nsgo-dev/nsgo/ui"
+	"github.com/oneo-me/nsgo-icons-kubai/examples/gallery/locales"
 
 	kubai "github.com/oneo-me/nsgo-icons-kubai"
 )
@@ -28,6 +29,7 @@ type state struct {
 	variant  *core.Signal[kubai.Variant]
 	tone     *core.Signal[bool]
 	click    *core.Signal[bool]
+	language *core.Signal[string]
 	chosen   *ui.Selection
 	matching func() []entry
 	stats    *stats
@@ -66,22 +68,26 @@ func (s *state) icon(e entry, size core.Points, testID string, click bool) core.
 // Root is the gallery's one screen: the search and the grid, and the panel
 // beside them.
 func Root(cx *core.Scope) core.Node {
-	cx.SetTheme(ui.DefaultTheme())
 	colors := ui.ColorsOf(cx)
 	s := &state{
-		query:   core.NewSignal(cx, ""),
-		size:    core.NewSignal(cx, 40.0),
-		accent:  core.NewSignal(cx, kubai.Reference),
-		variant: core.NewSignal(cx, kubai.VariantColor),
-		tone:    core.NewSignal(cx, false),
-		click:   core.NewSignal(cx, false),
-		chosen:  ui.NewSelection(cx, false),
+		query:    core.NewSignal(cx, ""),
+		size:     core.NewSignal(cx, 40.0),
+		accent:   core.NewSignal(cx, kubai.Reference),
+		variant:  core.NewSignal(cx, kubai.VariantColor),
+		tone:     core.NewSignal(cx, true),
+		click:    core.NewSignal(cx, false),
+		language: core.NewSignal(cx, ""),
+		chosen:   ui.NewSelection(cx, false),
 	}
-	s.chosen.Set("folder")
+	if len(s.chosen.Keys()) == 0 {
+		s.chosen.Set("folder")
+	}
+	rememberLanguage(cx, s)
+	_ = locales.For(cx)
 	s.matching = core.NewMemoFunc(cx, func() []entry { return search(s.query.Get()) }, nil).Get
 	s.stats = reportUsage(cx, s)
-	desktop.SetTitle(cx, "Kubai Icons")
-	cx.Effect(func() { desktop.SetApplicationMenu(cx, menu(locales.For(cx))) })
+	desktop.SetTitle(cx, locales.AppName(cx))
+	cx.Effect(func() { desktop.SetApplicationMenu(cx, menu(cx)) })
 	return core.View{Style: ui.FillRest.Merge(core.Style{Direction: core.Row}),
 		StyleFunc: func() core.Style { return core.Style{Background: colors.Background()} },
 		Children:  []core.Node{browser(cx, s), panel(cx, s)}}
@@ -89,9 +95,10 @@ func Root(cx *core.Scope) core.Node {
 
 // menu is the application menu: the app menu and Edit of roles, and
 // Window.
-func menu(tr locales.Messages) []desktop.MenuItem {
+func menu(cx *core.Scope) []desktop.MenuItem {
+	tr := desklocales.For(cx)
 	return []desktop.MenuItem{
-		{Label: "Kubai Icons", Items: []desktop.MenuItem{
+		{Label: locales.AppName(cx), Items: []desktop.MenuItem{
 			{Role: desktop.MenuAbout}, {Separator: true},
 			{Role: desktop.MenuHide}, {Role: desktop.MenuHideOthers}, {Role: desktop.MenuShowAll}, {Separator: true},
 			{Role: desktop.MenuQuit},

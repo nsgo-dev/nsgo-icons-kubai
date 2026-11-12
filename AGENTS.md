@@ -4,7 +4,7 @@ NSGo Kubai Icons is Kubai Icons for NSGo as a library of its own: layered icons 
 
 ## Principles
 
-- NSGo comes from the commit `go.mod` requires. When the pack needs a change in NSGo, land it on NSGo's `main` first, following that repository's own instructions, then run `go get github.com/oneo-me/nsgo@<commit>`.
+- NSGo comes from the commit `go.mod` requires. When the pack needs a change in NSGo, land it on NSGo's `main` first, following that repository's own instructions, then run `go get github.com/nsgo-dev/nsgo@<commit>`.
 - Keep the [boundaries](ARCHITECTURE.md#boundaries): NSGo's public packages only, no runtime registry, generated files only from `tools/kubaigen`.
 - Keep `LICENSE` for this repository's code and `LICENSE-ICONS` for upstream's icons.
 

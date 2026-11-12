@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  为 <a href="https://github.com/oneo-me/nsgo">NSGo</a> 应用提供的 2,871 个 <a href="https://github.com/kubai087/kubai-icons">Kubai Icons</a>：分层绘制，随强调色着色，悬停时会动，运行时不需要 JavaScript。
+  为 <a href="https://github.com/nsgo-dev/nsgo">NSGo</a> 应用提供的 2,945 个 <a href="https://github.com/kubai087/kubai-icons">Kubai Icons</a>：分层绘制，随强调色着色，悬停时会动，运行时不需要 JavaScript。
 </p>
 
 <p align="center">

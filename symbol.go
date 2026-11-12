@@ -3,7 +3,7 @@ package kubai
 import (
 	"sync"
 
-	"github.com/oneo-me/nsgo/core"
+	"github.com/nsgo-dev/nsgo/core"
 )
 
 // Symbol is one Kubai icon: its layers and how they move on hover. Icon

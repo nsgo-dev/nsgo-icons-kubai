@@ -5,7 +5,7 @@ import (
 	"go/format"
 	"strings"
 
-	"github.com/oneo-me/nsgo/core"
+	"github.com/nsgo-dev/nsgo/core"
 
 	kubai "github.com/oneo-me/nsgo-icons-kubai"
 )
@@ -28,7 +28,7 @@ func usage(e entry, size float64, accent core.Color, variant kubai.Variant, tone
 		fmt.Fprintf(&b, "Size: %g,\n", size)
 	}
 	if accent != kubai.Reference {
-		fmt.Fprintf(&b, "Color: core.RGB(0x%06X),\n", uint32(accent)>>8)
+		fmt.Fprintf(&b, "Color: core.RGB(0x%06X),\n", rgb24(accent))
 	}
 	if variant == kubai.VariantSoft {
 		b.WriteString("Variant: kubai.VariantSoft,\n")

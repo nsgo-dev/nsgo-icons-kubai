@@ -10,15 +10,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/oneo-me/nsgo/core"
+	"github.com/nsgo-dev/nsgo/core"
 )
 
-// The gallery counts its use in Umami under the website's site: a
-// pageview for each icon looked at, an event for each usage copied,
-// tagged as the gallery client and carrying a random ID kept in the
-// storage, so that one install is one visitor. Builds of nsgo dev
-// (statsBuild) and test binaries report nothing, and the settings turn
-// it off.
+// The gallery counts visits in Umami under the website's site, tagged as
+// the gallery client and carrying a random ID kept in the storage, so
+// that one install is one visitor. Builds of nsgo dev (statsBuild) and
+// test binaries report nothing, and the settings turn it off.
 const (
 	statsURL     = "https://umami.oneo.me/api/send"
 	statsWebsite = "4c29c1e7-28ea-4d0c-8297-b22d29bb1c41"
@@ -33,15 +31,12 @@ const (
 	statsKey   = "stats"
 )
 
-// An icon counts as looked at once it stays chosen for statsDwell, so that
-// arrowing through the grid sends one pageview, not one per icon passed.
 // Umami measures a visit from its first event to its last, so the gallery
-// sends a heartbeat each statsBeat, for statsIdle after the last thing done
-// in it: a window left open does not count as use.
+// sends a heartbeat each statsBeat, for statsIdle after the last thing
+// done in it: a window left open does not count as use.
 const (
-	statsDwell = time.Second
-	statsBeat  = time.Minute
-	statsIdle  = 5 * time.Minute
+	statsBeat = time.Minute
+	statsIdle = 5 * time.Minute
 )
 
 // statsOn reports whether the settings leave the statistics on.
@@ -62,33 +57,29 @@ func setStatsOn(cx *core.Scope, on bool) {
 // statsPayload is an event of Umami's /api/send: a pageview without a
 // name.
 type statsPayload struct {
-	Website  string            `json:"website"`
-	Hostname string            `json:"hostname"`
-	URL      string            `json:"url"`
-	Title    string            `json:"title"`
-	Language string            `json:"language,omitempty"`
-	Screen   string            `json:"screen,omitempty"`
-	Tag      string            `json:"tag"`
-	ID       string            `json:"id"`
-	Name     string            `json:"name,omitempty"`
-	Data     map[string]string `json:"data,omitempty"`
+	Website  string `json:"website"`
+	Hostname string `json:"hostname"`
+	URL      string `json:"url"`
+	Title    string `json:"title"`
+	Language string `json:"language,omitempty"`
+	Screen   string `json:"screen,omitempty"`
+	Tag      string `json:"tag"`
+	ID       string `json:"id"`
+	Name     string `json:"name,omitempty"`
 }
 
 // stats sends the gallery's events; a nil *stats sends nothing.
 type stats struct {
-	cx    *core.Scope
-	id    string
-	queue chan statsPayload
-	// page is the icon last counted as looked at, and active when the
-	// user last did something.
-	page   string
+	cx     *core.Scope
+	id     string
+	queue  chan statsPayload
 	active time.Time
 }
 
-// reportUsage starts the statistics and counts the icon s has chosen as
-// it changes, or returns nil in builds and tests that report nothing.
-// Events are made on the graph's goroutine and sent from another, oldest
-// first; one that fails is dropped.
+// reportUsage starts the statistics and counts this install as a visit,
+// or returns nil in builds and tests that report nothing. Events are
+// made on the graph's goroutine and sent from another, oldest first;
+// one that fails is dropped.
 func reportUsage(cx *core.Scope, s *state) *stats {
 	if !statsBuild || testing.Testing() {
 		return nil
@@ -101,31 +92,21 @@ func reportUsage(cx *core.Scope, s *state) *stats {
 		id = hex.EncodeToString(b)
 		store.SetItem(installKey, id)
 	}
-	st := &stats{cx: cx, id: id, queue: make(chan statsPayload, 32)}
+	st := &stats{cx: cx, id: id, queue: make(chan statsPayload, 32), active: time.Now()}
 	go sendStats(st.queue, statsAgent(cx.Env().OS()))
-
-	var pending func() bool
+	st.send("")
 	cx.Effect(func() {
-		name := s.selected().name
+		s.selected()
 		s.query.Get()
 		core.Untracked(cx, func() bool {
 			st.active = time.Now()
-			if pending != nil {
-				pending()
-			}
-			pending = cx.AfterFunc(statsDwell, func() {
-				if name != st.page {
-					st.page = name
-					st.send("", nil)
-				}
-			})
 			return true
 		})
 	})
 	var beat func()
 	beat = func() {
 		if time.Since(st.active) < statsIdle {
-			st.send("heartbeat", nil)
+			st.send("heartbeat")
 		}
 		cx.AfterFunc(statsBeat, beat)
 	}
@@ -133,26 +114,17 @@ func reportUsage(cx *core.Scope, s *state) *stats {
 	return st
 }
 
-// copied counts the usage of the icon named copied to the clipboard.
-func (st *stats) copied(name string) {
-	if st == nil {
-		return
-	}
-	st.active = time.Now()
-	st.send("copy-usage", map[string]string{"icon": name})
-}
-
-// send queues an event on the page looked at, a pageview when name is
-// empty, unless the settings turned the statistics off.
-func (st *stats) send(name string, data map[string]string) {
+// send queues an event, a pageview when name is empty, unless the
+// settings turned the statistics off.
+func (st *stats) send(name string) {
 	if !statsOn(st.cx) {
 		return
 	}
 	env := st.cx.Env()
 	w := env.Window()
-	p := statsPayload{Website: statsWebsite, Hostname: statsHost, URL: "/" + st.page, Title: st.page,
+	p := statsPayload{Website: statsWebsite, Hostname: statsHost, URL: "/", Title: "Kubai Icons",
 		Language: env.Locale(), Screen: fmt.Sprintf("%dx%d", int(w.Width), int(w.Height)),
-		Tag: statsTag, ID: st.id, Name: name, Data: data}
+		Tag: statsTag, ID: st.id, Name: name}
 	select {
 	case st.queue <- p:
 	default:

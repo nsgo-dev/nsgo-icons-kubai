@@ -1,0 +1,26 @@
+appName: Kubai Icons
+searchPlaceholder: 搜索 {count} 个图标
+iconCount: "{count, plural, other {# 个图标}}"
+noIconsMatch: 没有匹配的图标
+usage: 用法
+copy: 复制
+copied: 已复制
+settings: 设置
+size: 大小
+color: 颜色
+variant: 样式
+variantColor: 彩色
+variantSoft: 柔和
+tone: 色调
+click: 点击
+on: 开
+off: 关
+statsSend: 统计
+language: 语言
+languageSystem: 系统
+colorBlue: 蓝
+colorIndigo: 靛
+colorPink: 粉
+colorGreen: 绿
+colorAmber: 琥珀
+colorCustom: 自定义

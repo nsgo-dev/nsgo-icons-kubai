@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/dop251/goja v0.0.0-20261027234916-5f913d1693d9
 	github.com/evanw/esbuild v0.28.2
-	github.com/oneo-me/nsgo v0.0.0-20261109061458-020e94179231
+	github.com/nsgo-dev/nsgo v0.0.0-20261112121347-3eb043c9d1db
 )
 
 require (
@@ -20,6 +20,7 @@ require (
 	golang.org/x/net v0.58.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
 	golang.org/x/text v0.43.0 // indirect
+	rsc.io/qr v0.2.0 // indirect
 )
 
-tool github.com/oneo-me/nsgo/cmd/nsgo
+tool github.com/nsgo-dev/nsgo/cmd/nsgo

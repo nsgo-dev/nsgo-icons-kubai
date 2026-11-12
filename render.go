@@ -3,7 +3,7 @@ package kubai
 import (
 	"math"
 
-	"github.com/oneo-me/nsgo/core"
+	"github.com/nsgo-dev/nsgo/core"
 )
 
 // renderer draws programs into a drawing. Without a motion value it draws

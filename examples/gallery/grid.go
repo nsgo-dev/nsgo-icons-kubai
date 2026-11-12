@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"slices"
 	"strings"
 
-	"github.com/oneo-me/nsgo/core"
-	"github.com/oneo-me/nsgo/ui"
+	"github.com/nsgo-dev/nsgo/core"
+	"github.com/nsgo-dev/nsgo/ui"
+	"github.com/oneo-me/nsgo-icons-kubai/examples/gallery/locales"
 )
 
 // search returns the icons whose names hold every word of query; spaces
@@ -69,9 +69,9 @@ func browser(cx *core.Scope, s *state) core.Node {
 	columns := core.NewMemo(cx, func() int {
 		return max(1, int((width.Get()+8)/(cellWidth(s.size.Get())+8)))
 	})
-	field := ui.Input{Input: core.Input{Value: s.query.Get, OnChange: s.query.Set, TestID: "search",
-		Placeholder: fmt.Sprintf("Search %d icons", len(allIcons)), Style: core.Style{FlexGrow: 1}}}
-	count := core.Text{ContentFunc: func() string { return fmt.Sprintf("%d icons", len(s.matching())) },
+	field := ui.Input{Value: s.query.Get, OnChange: s.query.Set, TestID: "search",
+		PlaceholderFunc: func() string { return locales.SearchPlaceholder(cx, len(allIcons)) }, Style: core.Style{FlexGrow: 1}}
+	count := core.Text{ContentFunc: func() string { return locales.IconCount(cx, len(s.matching())) },
 		Style: ui.TypeCaption, StyleFunc: func() core.Style { return core.Style{Color: colors.Muted()} }}
 	grid := core.Dynamic(func(*core.Scope) core.Node {
 		n, size := columns.Get(), s.size.Get()
@@ -79,7 +79,7 @@ func browser(cx *core.Scope, s *state) core.Node {
 			Key:       func(i int) any { e, _ := s.at(i); return e.name },
 			RowLabel:  func(i int) string { e, _ := s.at(i); return label(e.name) },
 			Selection: s.chosen, EstimatedSize: core.Points(size + 48), Label: "Icons", TestID: "icons",
-			Empty: core.Text{Content: "No icons match", Style: ui.TypeBody.Merge(core.Style{AlignSelf: core.AlignCenter, Margin: core.All(32)}),
+			Empty: core.Text{Content: locales.NoIconsMatch(cx), Style: ui.TypeBody.Merge(core.Style{AlignSelf: core.AlignCenter, Margin: core.All(32)}),
 				StyleFunc: func() core.Style { return core.Style{Color: colors.Muted()} }},
 			Row: func(cx *core.Scope, row core.ListRow) core.Node { return cell(cx, s, row) },
 			RowStyle: core.Style{Direction: core.Column, JustifyContent: core.JustifyCenter, Gap: 8,

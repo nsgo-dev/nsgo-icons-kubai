@@ -2,12 +2,13 @@ package main
 
 import (
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
-	"github.com/oneo-me/nsgo/core"
-	"github.com/oneo-me/nsgo/desktop"
-	"github.com/oneo-me/nsgo/nsgotest"
+	"github.com/nsgo-dev/nsgo/core"
+	"github.com/nsgo-dev/nsgo/desktop"
+	"github.com/nsgo-dev/nsgo/nsgotest"
 
 	kubai "github.com/oneo-me/nsgo-icons-kubai"
 )
@@ -15,10 +16,15 @@ import (
 // TestMain gives the platform the main thread under nsgo test -target.
 func TestMain(m *testing.M) { nsgotest.Main(m) }
 
+func start(t testing.TB, opts ...nsgotest.Option) *nsgotest.App {
+	return nsgotest.Start(t, Root, append([]nsgotest.Option{nsgotest.Size(1100, 760),
+		nsgotest.Environment(core.Environment{Locale: "en"})}, opts...)...)
+}
+
 // TestBrowse lays out the grid within the window, mounting only the
 // icons near the visible ones, and plays one on hover and back.
 func TestBrowse(t *testing.T) {
-	app := nsgotest.Start(t, Root, nsgotest.Size(1100, 760))
+	app := start(t)
 	grid := app.Find("icons").Frame
 	if grid.Size.Height > 760 {
 		t.Fatalf("grid is %v tall, past the window", grid.Size.Height)
@@ -46,14 +52,14 @@ func TestBrowse(t *testing.T) {
 
 // TestSearchAndCopy narrows the grid, chooses an icon and copies its code.
 func TestSearchAndCopy(t *testing.T) {
-	app := nsgotest.Start(t, Root, nsgotest.Size(1100, 760))
+	app := start(t)
 	app.Type("search", "folder plus")
 	app.WaitFor("text:3 icons", 2*time.Second)
 	app.Press("icon-folder-plus")
 	if got := app.Find("preview-name").Text; got != "folder-plus" {
 		t.Fatalf("preview shows %q, want folder-plus", got)
 	}
-	want := "kubai.Icon{\n\tSymbol: kubai.FolderPlus(),\n\tSize:   40,\n\tLabel:  \"Folder plus\",\n}"
+	want := "kubai.Icon{\n\tSymbol:     kubai.FolderPlus(),\n\tSize:       40,\n\tBadgeColor: kubai.FolderPlus().Tone(),\n\tLabel:      \"Folder plus\",\n}"
 	if got := app.Find("usage").Text; got != want {
 		t.Fatalf("usage is\n%s\nwant\n%s", got, want)
 	}
@@ -67,7 +73,7 @@ func TestSearchAndCopy(t *testing.T) {
 
 // TestApplicationMenu sets the app menu of roles, Edit, and Window.
 func TestApplicationMenu(t *testing.T) {
-	app := nsgotest.Start(t, Root, nsgotest.Size(1100, 760))
+	app := start(t)
 	if len(app.Menu) == 0 {
 		t.Fatal("no application menu")
 	}
@@ -111,4 +117,30 @@ func TestUsage(t *testing.T) {
 	if got := usage(byName["folder"], 24, kubai.Reference, kubai.VariantColor, true, false); got != "kubai.Icon{\n\tSymbol: kubai.Folder(),\n\tLabel:  \"Folder\",\n}" {
 		t.Fatalf("default usage is\n%s", got)
 	}
+}
+
+// TestColorVariantAndLanguage changes the accent and variant with one
+// press, opens the color well's picker, and switches the UI to Chinese.
+func TestColorVariantAndLanguage(t *testing.T) {
+	app := start(t)
+	app.Press("color-pink")
+	want := "kubai.Icon{\n\tSymbol: kubai.Folder(),\n\tSize:   40,\n\tColor:  core.RGB(0xEC4899),\n\tLabel:  \"Folder\",\n}"
+	if got := app.Find("usage").Text; got != want {
+		t.Fatalf("pink usage is\n%s\nwant\n%s", got, want)
+	}
+	app.Press("variant-soft")
+	if !strings.Contains(app.Find("usage").Text, "VariantSoft") {
+		t.Fatal("soft variant missing from usage")
+	}
+	app.Press("language-zh-Hans")
+	app.Find("text:用法")
+	app.Press("language-en")
+	app.Find("text:Usage")
+	app.Press("color-custom")
+	app.Find("color-picker")
+}
+
+func TestLanguagePersists(t *testing.T) {
+	app := start(t, nsgotest.Storage(map[string]string{languageKey: "zh-Hans"}))
+	app.Find("text:用法")
 }

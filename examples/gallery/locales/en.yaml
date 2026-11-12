@@ -1,0 +1,31 @@
+appName:
+  message: Kubai Icons
+  description: The app's name, which its packages list it under in each language.
+searchPlaceholder:
+  message: "Search {count} icons"
+  placeholders:
+    count: { type: int }
+iconCount: "{count, plural, one {# icon} other {# icons}}"
+noIconsMatch: No icons match
+usage: Usage
+copy: Copy
+copied: Copied
+settings: Settings
+size: Size
+color: Color
+variant: Variant
+variantColor: Color
+variantSoft: Soft
+tone: Tone
+click: Click
+on: "On"
+off: "Off"
+statsSend: Stats
+language: Language
+languageSystem: System
+colorBlue: Blue
+colorIndigo: Indigo
+colorPink: Pink
+colorGreen: Green
+colorAmber: Amber
+colorCustom: Custom
