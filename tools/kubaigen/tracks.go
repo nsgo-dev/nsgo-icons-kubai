@@ -9,14 +9,14 @@ import (
 // The motion: 460 ms on cubic-bezier(.22, 1, .36, 1), as upstream's.
 func bezier(x1, y1, x2, y2 float64) func(float64) float64 {
 	cx := 3 * x1
-	bx := 3*(x2-x1) - cx
+	bx := float64(3*(x2-x1)) - cx
 	ax := 1 - cx - bx
 	cy := 3 * y1
-	by := 3*(y2-y1) - cy
+	by := float64(3*(y2-y1)) - cy
 	ay := 1 - cy - by
-	sx := func(t float64) float64 { return ((ax*t+bx)*t + cx) * t }
-	sy := func(t float64) float64 { return ((ay*t+by)*t + cy) * t }
-	dx := func(t float64) float64 { return (3*ax*t+2*bx)*t + cx }
+	sx := func(t float64) float64 { return (float64(float64(float64(ax*t)+bx)*t) + cx) * t }
+	sy := func(t float64) float64 { return (float64(float64(float64(ay*t)+by)*t) + cy) * t }
+	dx := func(t float64) float64 { return float64(float64(float64(3*ax*t)+float64(2*bx))*t) + cx }
 	return func(x float64) float64 {
 		if x <= 0 {
 			return 0
@@ -307,7 +307,7 @@ func at(ps []pt, x float64) float64 {
 	for i := 1; i < len(ps); i++ {
 		if x <= ps[i].x {
 			a, b := ps[i-1], ps[i]
-			return a.y + (b.y-a.y)*(x-a.x)/(b.x-a.x)
+			return a.y + float64((b.y-a.y)*(x-a.x))/(b.x-a.x)
 		}
 	}
 	return ps[len(ps)-1].y
@@ -325,7 +325,7 @@ func simplify(ps []pt, tol float64) []pt {
 	rec = func(a, b int) {
 		worst, at := 0.0, -1
 		for i := a + 1; i < b; i++ {
-			y := ps[a].y + (ps[b].y-ps[a].y)*(ps[i].x-ps[a].x)/(ps[b].x-ps[a].x)
+			y := ps[a].y + float64((ps[b].y-ps[a].y)*(ps[i].x-ps[a].x))/(ps[b].x-ps[a].x)
 			if d := math.Abs(ps[i].y - y); d > worst {
 				worst, at = d, i
 			}
@@ -386,4 +386,3 @@ func optimizeAlpha(text string) string {
 	}
 	return strings.Join(out, " ")
 }
-
