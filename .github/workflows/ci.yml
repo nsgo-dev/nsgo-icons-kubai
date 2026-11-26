@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Check
+        run: go tool nsgo check
+
+      - name: Test
+        run: go tool nsgo test
+
+      - name: Check the generated files against upstream
+        run: |
+          commit=$(jq -r .commit upstream.json)
+          repository=$(jq -r .repository upstream.json)
+          git init -q "$RUNNER_TEMP/kubai-icons"
+          git -C "$RUNNER_TEMP/kubai-icons" fetch -q --depth 1 "$repository.git" "$commit"
+          git -C "$RUNNER_TEMP/kubai-icons" checkout -q FETCH_HEAD
+          go run ./tools/kubaigen -check -upstream "$RUNNER_TEMP/kubai-icons" -commit "$commit"
