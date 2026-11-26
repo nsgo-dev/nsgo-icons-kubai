@@ -380,10 +380,10 @@ func (c *compiler) paint(p string, segs []seg) error {
 			c.num(slotRest, gx("y2", 0))
 			return nil
 		}
-		c.num(slotRest, bx0+gx("x1", 0)*w)
-		c.num(slotRest, by0+gx("y1", 0)*h)
-		c.num(slotRest, bx0+gx("x2", 1)*w)
-		c.num(slotRest, by0+gx("y2", 0)*h)
+		c.num(slotRest, bx0+float64(gx("x1", 0)*w))
+		c.num(slotRest, by0+float64(gx("y1", 0)*h))
+		c.num(slotRest, bx0+float64(gx("x2", 1)*w))
+		c.num(slotRest, by0+float64(gx("y2", 0)*h))
 		return nil
 	}
 	col, ok := colorToken(p)

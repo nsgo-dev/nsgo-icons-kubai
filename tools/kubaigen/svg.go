@@ -57,20 +57,23 @@ func (e *element) walk(fn func(*element)) {
 }
 
 // matrix is an affine transform a, b, c, d, e, f, as SVG's matrix().
+// f rounds a product to float64 before it is added, so the Go compiler cannot fuse the two into one fused multiply-add. arm64 fuses and amd64 does not, and a fused result can round differently in the last place, which changed icons_gen.go with the machine that ran kubaigen.
+func f(x float64) float64 { return float64(x) }
+
 type matrix [6]float64
 
 var identity = matrix{1, 0, 0, 1, 0, 0}
 
 func (m matrix) mul(n matrix) matrix {
 	return matrix{
-		m[0]*n[0] + m[2]*n[1], m[1]*n[0] + m[3]*n[1],
-		m[0]*n[2] + m[2]*n[3], m[1]*n[2] + m[3]*n[3],
-		m[0]*n[4] + m[2]*n[5] + m[4], m[1]*n[4] + m[3]*n[5] + m[5],
+		f(m[0]*n[0]) + f(m[2]*n[1]), f(m[1]*n[0]) + f(m[3]*n[1]),
+		f(m[0]*n[2]) + f(m[2]*n[3]), f(m[1]*n[2]) + f(m[3]*n[3]),
+		f(m[0]*n[4]) + f(m[2]*n[5]) + m[4], f(m[1]*n[4]) + f(m[3]*n[5]) + m[5],
 	}
 }
 
 func (m matrix) apply(x, y float64) (float64, float64) {
-	return m[0]*x + m[2]*y + m[4], m[1]*x + m[3]*y + m[5]
+	return f(m[0]*x) + f(m[2]*y) + m[4], f(m[1]*x) + f(m[3]*y) + m[5]
 }
 
 // parseTransform reads a transform attribute.
@@ -104,7 +107,7 @@ func parseTransform(s string) (matrix, error) {
 			r := arg(0, 0) * math.Pi / 180
 			c, sn := math.Cos(r), math.Sin(r)
 			x, y := arg(1, 0), arg(2, 0)
-			m = m.mul(matrix{c, sn, -sn, c, x - c*x + sn*y, y - sn*x - c*y})
+			m = m.mul(matrix{c, sn, -sn, c, x - f(c*x) + f(sn*y), y - f(sn*x) - f(c*y)})
 		case "matrix":
 			if len(n) != 6 {
 				return m, fmt.Errorf("matrix %q", s)
@@ -320,8 +323,8 @@ func arcCubics(x1, y1, rx, ry, rot float64, large, sweep bool, x2, y2 float64) [
 		// Nothing to sweep: four straight pieces to the end.
 		for k := range out {
 			t := float64(k+1) / 4
-			px, py := x1+(x2-x1)*t, y1+(y2-y1)*t
-			qx, qy := x1+(x2-x1)*(float64(k)/4), y1+(y2-y1)*(float64(k)/4)
+			px, py := x1+f((x2-x1)*t), y1+f((y2-y1)*t)
+			qx, qy := x1+f((x2-x1)*(float64(k)/4)), y1+f((y2-y1)*(float64(k)/4))
 			out[k] = seg{'C', []float64{qx, qy, px, py, px, py}}
 		}
 		return out
@@ -329,14 +332,14 @@ func arcCubics(x1, y1, rx, ry, rot float64, large, sweep bool, x2, y2 float64) [
 	phi := rot * math.Pi / 180
 	cs, sn := math.Cos(phi), math.Sin(phi)
 	dx, dy := (x1-x2)/2, (y1-y2)/2
-	x1p, y1p := cs*dx+sn*dy, -sn*dx+cs*dy
-	lam := x1p*x1p/(rx*rx) + y1p*y1p/(ry*ry)
+	x1p, y1p := f(cs*dx)+f(sn*dy), f(-sn*dx)+f(cs*dy)
+	lam := f(x1p*x1p)/f(rx*rx) + f(y1p*y1p)/f(ry*ry)
 	if lam > 1 {
 		s := math.Sqrt(lam)
 		rx, ry = rx*s, ry*s
 	}
-	num := rx*rx*ry*ry - rx*rx*y1p*y1p - ry*ry*x1p*x1p
-	den := rx*rx*y1p*y1p + ry*ry*x1p*x1p
+	num := f(rx*rx*ry*ry) - f(rx*rx*y1p*y1p) - f(ry*ry*x1p*x1p)
+	den := f(rx*rx*y1p*y1p) + f(ry*ry*x1p*x1p)
 	co := 0.0
 	if den > 0 && num > 0 {
 		co = math.Sqrt(num / den)
@@ -345,9 +348,9 @@ func arcCubics(x1, y1, rx, ry, rot float64, large, sweep bool, x2, y2 float64) [
 		co = -co
 	}
 	cxp, cyp := co*rx*y1p/ry, -co*ry*x1p/rx
-	cx, cy := cs*cxp-sn*cyp+(x1+x2)/2, sn*cxp+cs*cyp+(y1+y2)/2
+	cx, cy := f(cs*cxp)-f(sn*cyp)+(x1+x2)/2, f(sn*cxp)+f(cs*cyp)+(y1+y2)/2
 	ang := func(ux, uy, vx, vy float64) float64 {
-		return math.Atan2(ux*vy-uy*vx, ux*vx+uy*vy)
+		return math.Atan2(f(ux*vy)-f(uy*vx), f(ux*vx)+f(uy*vy))
 	}
 	t1 := ang(1, 0, (x1p-cxp)/rx, (y1p-cyp)/ry)
 	dt := ang((x1p-cxp)/rx, (y1p-cyp)/ry, (-x1p-cxp)/rx, (-y1p-cyp)/ry)
@@ -360,14 +363,14 @@ func arcCubics(x1, y1, rx, ry, rot float64, large, sweep bool, x2, y2 float64) [
 	k := 4.0 / 3 * math.Tan(step/4)
 	pt := func(t float64) (float64, float64) {
 		ex, ey := rx*math.Cos(t), ry*math.Sin(t)
-		return cs*ex - sn*ey + cx, sn*ex + cs*ey + cy
+		return f(cs*ex) - f(sn*ey) + cx, f(sn*ex) + f(cs*ey) + cy
 	}
 	der := func(t float64) (float64, float64) {
 		ex, ey := -rx*math.Sin(t), ry*math.Cos(t)
-		return cs*ex - sn*ey, sn*ex + cs*ey
+		return f(cs*ex) - f(sn*ey), f(sn*ex) + f(cs*ey)
 	}
 	for i := range out {
-		a, b := t1+step*float64(i), t1+step*float64(i+1)
+		a, b := t1+f(step*float64(i)), t1+f(step*float64(i+1))
 		ax, ay := pt(a)
 		bx, by := pt(b)
 		if i == 3 {
@@ -375,7 +378,7 @@ func arcCubics(x1, y1, rx, ry, rot float64, large, sweep bool, x2, y2 float64) [
 		}
 		dax, day := der(a)
 		dbx, dby := der(b)
-		out[i] = seg{'C', []float64{ax + k*dax, ay + k*day, bx - k*dbx, by - k*dby, bx, by}}
+		out[i] = seg{'C', []float64{ax + f(k*dax), ay + f(k*day), bx - f(k*dbx), by - f(k*dby), bx, by}}
 	}
 	return out
 }
@@ -386,10 +389,10 @@ func ellipsePath(cx, cy, rx, ry float64) []seg {
 	const k = 0.5522847498307936
 	return []seg{
 		{'M', []float64{cx + rx, cy}},
-		{'C', []float64{cx + rx, cy - k*ry, cx + k*rx, cy - ry, cx, cy - ry}},
-		{'C', []float64{cx - k*rx, cy - ry, cx - rx, cy - k*ry, cx - rx, cy}},
-		{'C', []float64{cx - rx, cy + k*ry, cx - k*rx, cy + ry, cx, cy + ry}},
-		{'C', []float64{cx + k*rx, cy + ry, cx + rx, cy + k*ry, cx + rx, cy}},
+		{'C', []float64{cx + rx, cy - f(k*ry), cx + f(k*rx), cy - ry, cx, cy - ry}},
+		{'C', []float64{cx - f(k*rx), cy - ry, cx - rx, cy - f(k*ry), cx - rx, cy}},
+		{'C', []float64{cx - rx, cy + f(k*ry), cx - f(k*rx), cy + ry, cx, cy + ry}},
+		{'C', []float64{cx + f(k*rx), cy + ry, cx + rx, cy + f(k*ry), cx + rx, cy}},
 		{'Z', nil},
 	}
 }
@@ -402,13 +405,13 @@ func rectPath(x, y, w, h, rx, ry float64) []seg {
 	return []seg{
 		{'M', []float64{x + rx, y}},
 		{'L', []float64{x + w - rx, y}},
-		{'C', []float64{x + w - rx + k*rx, y, x + w, y + ry - k*ry, x + w, y + ry}},
+		{'C', []float64{x + w - rx + f(k*rx), y, x + w, y + ry - f(k*ry), x + w, y + ry}},
 		{'L', []float64{x + w, y + h - ry}},
-		{'C', []float64{x + w, y + h - ry + k*ry, x + w - rx + k*rx, y + h, x + w - rx, y + h}},
+		{'C', []float64{x + w, y + h - ry + f(k*ry), x + w - rx + f(k*rx), y + h, x + w - rx, y + h}},
 		{'L', []float64{x + rx, y + h}},
-		{'C', []float64{x + rx - k*rx, y + h, x, y + h - ry + k*ry, x, y + h - ry}},
+		{'C', []float64{x + rx - f(k*rx), y + h, x, y + h - ry + f(k*ry), x, y + h - ry}},
 		{'L', []float64{x, y + ry}},
-		{'C', []float64{x, y + ry - k*ry, x + rx - k*rx, y, x + rx, y}},
+		{'C', []float64{x, y + ry - f(k*ry), x + rx - f(k*rx), y, x + rx, y}},
 		{'Z', nil},
 	}
 }
@@ -431,12 +434,12 @@ func pathLength(segs []seg) float64 {
 				var qx, qy float64
 				if s.cmd == 'Q' {
 					u := 1 - t
-					qx = u*u*x + 2*u*t*s.pts[0] + t*t*s.pts[2]
-					qy = u*u*y + 2*u*t*s.pts[1] + t*t*s.pts[3]
+					qx = f(u*u*x) + f(2*u*t*s.pts[0]) + f(t*t*s.pts[2])
+					qy = f(u*u*y) + f(2*u*t*s.pts[1]) + f(t*t*s.pts[3])
 				} else {
 					u := 1 - t
-					qx = u*u*u*x + 3*u*u*t*s.pts[0] + 3*u*t*t*s.pts[2] + t*t*t*s.pts[4]
-					qy = u*u*u*y + 3*u*u*t*s.pts[1] + 3*u*t*t*s.pts[3] + t*t*t*s.pts[5]
+					qx = f(u*u*u*x) + f(3*u*u*t*s.pts[0]) + f(3*u*t*t*s.pts[2]) + f(t*t*t*s.pts[4])
+					qy = f(u*u*u*y) + f(3*u*u*t*s.pts[1]) + f(3*u*t*t*s.pts[3]) + f(t*t*t*s.pts[5])
 				}
 				total += math.Hypot(qx-px, qy-py)
 				px, py = qx, qy
