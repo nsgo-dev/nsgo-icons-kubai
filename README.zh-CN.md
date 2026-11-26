@@ -27,10 +27,10 @@
 ## 安装
 
 ```sh
-go get github.com/nsgo-dev/nsgo-icons-kubai
+go get github.com/nsgo-dev/nsgo-icons-kubai@v0.1.0
 ```
 
-需要 Go 1.26。`go get` 会一并拉取本库所基于的 NSGo 提交。
+需要 Go 1.27.3 及以上版本和 NSGo v0.3.4 及以上版本。
 
 ## 使用
 
